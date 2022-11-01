@@ -4,13 +4,14 @@ module vga (
 
     output hsync,
     output vsync,
-    output [2:0] display
+    // output [2:0] rgb
+    output [7:0] r, g, b
     );
 
 reg [9:0] h_count;
 reg [2:0] h_dat;
-reg [2:0] v_dat;
 reg [9:0] v_count;
+reg [2:0] v_dat;
 reg [2:0] data;
 
 wire active;
@@ -30,7 +31,11 @@ assign active = ((h_count > h_bp) && (h_count <= h_dt)) && ((v_count > v_bp) && 
 
 assign hsync = (h_count > h_sp);
 assign vsync = (v_count > v_sp);
-assign display = (active) ?  data : 3'h00;
+// assign rgb = (active) ?  data : 3'h0;
+// assign rgb = (active) ?  3'hF : 3'h0;
+assign r = (active) ?  8'hFF : 8'h00;
+assign g = (active) ?  8'h00 : 8'h00;
+assign b = (active) ?  8'h00 : 8'h00;
 
 always @(posedge clk_master) begin
     clk_vga = ~clk_vga;
