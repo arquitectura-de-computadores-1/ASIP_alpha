@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module ALU_v #(parameter vector = 4, bus = 4, bus_selector = 4)(
+module ALU_vv #(parameter vector = 4, bus = 4, bus_selector = 4)(
 	input logic [vector-1:0][bus-1:0] a, b,
 	input logic [bus_selector-1:0] selector,
 
@@ -41,7 +41,7 @@ mux_4 #(4) mux_ALU_flags_v (
 	.out(carry_out));
 
 // -------------------------------------------------- MUX operations
-mux_4 #(vector*bus) mux_ALU_v (
+mux_4 #(vector*bus) mux_ALU_vv (
 	.d0({add_result[0], add_result[1], add_result[2], add_result[3]}), 	// add
 	.d1({sub_result[0], sub_result[1], sub_result[2], sub_result[3]}), 	// sub
 	.d2({mul_result[0], mul_result[1], mul_result[2], mul_result[3]}), 	// mul
@@ -54,7 +54,7 @@ endmodule
 
 // --------------------------------------------------
 
-module ALU_v_tb;
+module ALU_vv_tb;
 	localparam period = 10;
 	parameter vector = 4, bus = 3, bus_selector = 4;
 	integer i, j;
@@ -66,7 +66,7 @@ module ALU_v_tb;
 	logic [vector-1:0][bus-1:0] result;
 	logic [vector-1:0] carry_out;
 
-	ALU_v #(vector, bus) UUT (a, b, selector, result, carry_out);
+	ALU_vv #(vector, bus) UUT (a, b, selector, result, carry_out);
 
 	initial begin
 		selector = 4'd0; // add

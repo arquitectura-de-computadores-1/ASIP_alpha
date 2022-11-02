@@ -43,7 +43,7 @@ set_location_assignment PIN_88 -to switch[0]
 set_location_assignment PIN_89 -to switch[1]
 set_global_assignment -name FAMILY "Cyclone IV E"
 set_global_assignment -name DEVICE EP4CE6E22C8
-set_global_assignment -name TOP_LEVEL_ENTITY ALU_v
+set_global_assignment -name TOP_LEVEL_ENTITY ALU_vv
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 19.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "15:24:46  OCTOBER 22, 2022"
 set_global_assignment -name LAST_QUARTUS_VERSION "19.1.0 Lite Edition"
@@ -77,11 +77,25 @@ set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -
 set_global_assignment -name RESERVE_DATA0_AFTER_CONFIGURATION "USE AS REGULAR IO"
 set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
 set_location_assignment PIN_23 -to clk_master
-set_location_assignment PIN_105 -to display[0]
-set_location_assignment PIN_104 -to display[1]
-set_location_assignment PIN_106 -to display[2]
+set_location_assignment PIN_105 -to rgb[0]
+set_location_assignment PIN_104 -to rgb[1]
+set_location_assignment PIN_106 -to rgb[2]
 set_global_assignment -name NUM_PARALLEL_PROCESSORS 8
-set_global_assignment -name SYSTEMVERILOG_FILE core/arithmetic/ALU_v.sv
+# set_location_assignment PIN_106 -to r[0]
+# set_location_assignment PIN_104 -to g[0]
+# set_location_assignment PIN_105 -to b[0]
+set_global_assignment -name SYSTEMVERILOG_FILE core/arithmetic/ALU_vv.sv
+set_global_assignment -name SYSTEMVERILOG_FILE pipeline/program_counter.sv
+set_global_assignment -name SYSTEMVERILOG_FILE pipeline/fetch.sv
+set_global_assignment -name MIF_FILE pipeline/instructions.mif
+set_global_assignment -name SYSTEMVERILOG_FILE core/arithmetic/ALU_sv_sh.sv
+set_global_assignment -name SYSTEMVERILOG_FILE core/arithmetic/ALU_PF/ALU_TB.sv
+set_global_assignment -name SYSTEMVERILOG_FILE core/arithmetic/ALU_PF/ALU.sv
+set_global_assignment -name VERILOG_FILE core/vga/vga_r.v
+set_global_assignment -name SYSTEMVERILOG_FILE core/arithmetic/ALU_sv.sv
+set_global_assignment -name SYSTEMVERILOG_FILE core/arithmetic/ALU_fp_tb.sv
+set_global_assignment -name SYSTEMVERILOG_FILE core/selector/muxq_2.sv
+set_global_assignment -name SYSTEMVERILOG_FILE core/arithmetic/adder_fp.sv
 set_global_assignment -name SYSTEMVERILOG_FILE core/arithmetic/multiplier.sv
 set_global_assignment -name SYSTEMVERILOG_FILE core/selector/mux_4.sv
 set_global_assignment -name SYSTEMVERILOG_FILE core/selector/mux_2.sv
@@ -95,6 +109,9 @@ set_global_assignment -name MIF_FILE memory/ROM_img/img_base.mif
 set_global_assignment -name QIP_FILE memory/ROM_img/ROM_img.qip
 set_global_assignment -name QIP_FILE memory/RAM/RAM.qip
 set_global_assignment -name SYSTEMVERILOG_FILE memory/MemTest.sv
+set_global_assignment -name QIP_FILE pipeline/instructions.qip
+set_global_assignment -name QIP_FILE pipeline/register_s.qip
+set_global_assignment -name QIP_FILE core/vga/ROM_poke.qip
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top

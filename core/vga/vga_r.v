@@ -1,19 +1,22 @@
-module vga (
-    input clk_master,
+module vga_r (
+    input clk,
     input [1:0] switch,
 
     output hsync,
     output vsync,
-    output [2:0] rgb
-    // output [7:0] r, g, b
+    // output sync_b,
+    // output blank_b,
+    // output [2:0] data
+    output [7:0] r, g, b
     );
 
 reg [9:0] h_count;
 reg [2:0] h_dat;
-reg [9:0] v_count;
 reg [2:0] v_dat;
-reg [2:0] data;
-
+reg [9:0] v_count;
+reg [7:0] data;
+// parameter HACTIVE = 10'd640;
+// parameter VACTIVE = 10'd480;
 wire active;
 reg clk_vga;
 
@@ -27,16 +30,18 @@ v_bp = 10'd35,
 v_dt = 10'd515,
 v_fp = 10'd525;
 
-assign active = ((h_count > h_bp) && (h_count <= h_dt)) && ((v_count > v_bp) && (v_count <= v_dt));
+assign active = ((h_bp < h_count) && (h_count <= h_dt)) && ((v_bp < v_count) && (v_count <= v_dt));
 
-assign hsync = (h_count > h_sp);
-assign vsync = (v_count > v_sp);
-assign rgb = (active) ?  data : 3'h0;
-// assign r = (active) ?  8'hFF : 8'h00;
-// assign g = (active) ?  8'h00 : 8'h00;
-// assign b = (active) ?  8'h00 : 8'h00;
+assign hsync = (h_sp < h_count);
+assign vsync = (v_sp < v_count);
+// assign sync_b = hsync & vsync;
+// assign blank_b = (h_count < HACTIVE) & (v_count < VACTIVE);
+assign r = 8'hFF;
+assign g = 8'h00;
+assign b = 8'h00;
+//assign b = (active) ?  data : 8'h00;
 
-always @(posedge clk_master) begin
+always @(posedge clk) begin
     clk_vga = ~clk_vga;
 end
 
@@ -53,64 +58,57 @@ always @(posedge clk_vga) begin
     end
 end
 
-reg [18:0] address;
-ROM_poke (address, clk_vga, data_rom);
-
-always @(posedge clk_vga) begin
-    if (145 <= h_count && h_count <= 345 && 36 <= v_count && v_count <= 236) begin
-        address <= address + 1'b1;
-        if (address==307200)
-            address <= 1'b0;
-    end
-end
-
 always @(posedge clk_vga) begin
     case(switch[1:0])
         2'd0: data <= h_dat;
         2'd1: data <= (v_dat ~^ h_dat);
         2'd2: data <= (v_dat ^ h_dat);
-        2'd3: data <= data_rom;
+        2'd3: data <= v_dat;
     endcase
 end
 
 always @(posedge clk_vga) begin
-    if (h_count < 223)
-        v_dat <= 3'h7;
+    if (h_count == 143)
+        v_dat <= 8'h01;
+    else if (h_bp <= h_count && h_count < 223)
+        v_dat <= 8'h06;
     else if (h_count < 303)
-        v_dat <= 3'h6;
+        v_dat <= 8'h06;
     else if (h_count < 383)
-        v_dat <= 3'h5;
+        v_dat <= 8'h05;
     else if (h_count < 463)
-        v_dat <= 3'h4;
+        v_dat <= 8'h04;
     else if (h_count < 543)
-        v_dat <= 3'h3;
+        v_dat <= 8'h03;
     else if (h_count < 623)
-        v_dat <= 3'h2;
+        v_dat <= 8'h02;
     else if (h_count < 703)
-        v_dat <= 3'h1;
+        v_dat <= 8'h01;
     else if (h_count < 782)
-        v_dat <= 3'h0;
+        v_dat <= 8'h00;
     else if (h_count == 782)
-        v_dat <= 3'h1;
+        v_dat <= 8'h01;
 end
 
 always @(posedge clk_vga) begin
-    if (v_count < 94)
-        h_dat <= 3'h7;
+    if (v_count == 36)
+        h_dat <= 8'h01;
+    else if (v_bp <= v_count && v_count < 94)
+        h_dat <= 8'h06;
     else if (v_count < 154)
-        h_dat <= 3'h6;
+        h_dat <= 8'h06;
     else if (v_count < 214)
-        h_dat <= 3'h5;
+        h_dat <= 8'h05;
     else if (v_count < 274)
-        h_dat <= 3'h4;
+        h_dat <= 8'h04;
     else if (v_count < 334)
-        h_dat <= 3'h3;
+        h_dat <= 8'h03;
     else if (v_count < 394)
-        h_dat <= 3'h2;
+        h_dat <= 8'h02;
     else if (v_count < 454)
-        h_dat <= 3'h1;
+        h_dat <= 8'h01;
     else
-        h_dat <= 3'h0;
+        h_dat <= 8'h00;
 end
 
 endmodule

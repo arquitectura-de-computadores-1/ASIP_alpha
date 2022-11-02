@@ -3,8 +3,8 @@
 module multiplier #(parameter bus = 4)(
 	input [bus-1:0] a, b,
 
-	output logic [bus-1:0] result,
-	output logic overflow, zero, negative, carry_out
+	output [bus-1:0] result,
+	output overflow, zero, negative, carry_out
 	);
 
 // -------------------------------------------------- mul

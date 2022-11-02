@@ -1,8 +1,8 @@
 `timescale 1ns/1ps
 
-module shift #(parameter bus = 4, bus_shift = $clog2(bus))(
+module shift #(parameter bus = 4)(
 	input logic [bus-1:0] a,
-	input logic [bus_shift-1:0] shift_count,
+	input logic shift_count,
 	input logic dir,
 	
 	output logic [bus-1:0] y
